@@ -11,15 +11,6 @@ import socket
 from colorama import init, Fore
 
 
-# Create an object of SSHClient and connect to SSH
-# ssh = paramiko.SSHClient()
-
-# Adding a new host key to the local device
-# ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-
-# Initiates the SSH session to the remote machine
-# ssh.connect('192.168.0.100', port=22, username='vagrant', password='vagrant', timeout=3)
-
 # initialize colorama
 init()
 
