@@ -5,57 +5,62 @@
 # Date of latest revision:       02/21/2023
 # Purpose:                       Ops Challenge: Event Logging Tool Part 2 of 3
 
-import logging
-import time
 
+import logging
+import os
+import time
+from datetime import datetime
+import smtplib
+from decouple import config
 from logging.handlers import RotatingFileHandler
 
-#----------------------------------------------------------------------
-def create_rotating_log(path):
-    """
-    Creates a rotating log
-    """
-    logger = logging.getLogger("Rotating Log")
-    logger.setLevel(logging.INFO)
-    
-    # add a rotating handler
-    handler = RotatingFileHandler(path, maxBytes=20,
-                                  backupCount=5)
-    logger.addHandler(handler)
-    
-    for i in range(10):
-        logger.info("This is test log line %s" % i)
-        time.sleep(1.5)
+
+
+
+# I AM APPLYING CHALLENGE 27 INTO CHALLENGE 2!!!
+
+def send_email():
+    today = datetime.today()
+    if current_ping == 0:
+        message1 = "Your host is responding", str(today)
+    else:
+        message1 = "Your host is not responding", str(today)
+    # Sending the mail
+    email.sendmail(username, username, message1)
+
+logger = logging.getLogger('my_logger')
+handler = RotatingFileHandler('my_log.log', maxBytes=1000, backupCount=2) #set each VALUE
+logger.addHandler(handler)
+
+
+# Set the threshold of logger to DEBUG
+logger.setLevel(logging.DEBUG)
+
         
-#----------------------------------------------------------------------
-if __name__ == "__main__":
-    log_file = "test.log"
-    create_rotating_log(log_file)
+email = smtplib.SMTP('smtp.gmail.com', 587)
 
+email.starttls()
+username = config("username", default='')
+password = config("password", default='')
+email.login(username, password)
 
+current_ping = os.system("ping -c1 127.0.0.1")
 
-import logging
-import time
+while True:
+    last_ping = current_ping
+    logger.debug("System attempting to ping.")
+    current_ping = os.system("ping -c1 127.0.0.1")
+    time.sleep(2)
+    today = datetime.today()
+    print(today)
 
-from logging.handlers import TimedRotatingFileHandler
-
-#----------------------------------------------------------------------
-def create_timed_rotating_log(path):
-    """"""
-    logger = logging.getLogger("Rotating Log")
-    logger.setLevel(logging.INFO)
-    
-    handler = TimedRotatingFileHandler(path,
-                                       when="m",
-                                       interval=1,
-                                       backupCount=5)
-    logger.addHandler(handler)
-    
-    for i in range(6):
-        logger.info("This is a test!")
-        time.sleep(75)
-
-#----------------------------------------------------------------------
-if __name__ == "__main__":
-    log_file = "timed_test.log"
-    create_timed_rotating_log(log_file)
+    if current_ping == 0:
+        logger.info("This is an information that your ping was successful")
+        print(str(today) + " This ping was successful to: 127.0.0.1")
+    else:
+        logger.error("This is an error, the ping did not go through.")
+        print(str(today) +" This ping to: 127.0.0.1 was a failure!")
+    if current_ping != last_ping:
+        send_email()
+        if current_ping != 0:
+            logger.critical("The host is no longer reachable")
