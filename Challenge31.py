@@ -6,27 +6,36 @@
 # Purpose:                       Ops Challenge: Signature-based Malware Detection Part 1 of 3
 
 
-# Open Command Prompt. View manual to dir using:
-dir /?
+#!/usr/bin/python
 
-# Note that /B uses bare format, and /S recursively displays files and directories.
+# Pair programmed
+# Driver: Ben Arno
+# Navigators: Kevin Isaac, Jose Cardozo
 
-# Search a specific file in this directory using this syntax.
-dir /b/s *.file_extension
+#Imports
+import os
+from sys import platform
+#Ops401, Challenge2.py
+def linuxSearch(file, dir):
+  # DONE: Search each file in the directory by name
+  # DONE: For each positive detection, print to the screen the file name and location
+  # DONE: At the end of the search process, print to the screen how many files were searched and how many hits were found.
+  print(f"SEARCHING {dir} for {file}...")
+  os.system(f"find -D rates {dir} -name {file}")
 
-# Example: dir /b/s *.png would search for all png files recursively
+def windowsSearch(file, dir):
+  # DONE: Search each file in the directory by name
+  # DONE: For each positive detection, print to the screen the file name and location
+  # DONE: At the end of the search process, print to the screen how many files were searched and how many hits were found.
+  os.system(f"dir .\{dir} \"{file}*\" /s")
 
-# Alternatively, we can search for a file by name
-dir "\search term*" /s
+# DONE: Prompt the user to type in a file name to search for
+fName = input("Please enter a filename:\n")
 
-# Example: dir *picture*.jpg /s
+# DONE: Prompt the user for a directory to search in
+dName = input("Please enter the directory to search:\n")
 
-# We can search for folders recursively as well.
-dir "Name of folder to search" /AD /b /s
-
-# Example: dir Images /AD /b /s
-
-# If you only know the partial name of the folder you're looking for, try:
-dir /s/b /A:D "D:*partial-name-of-folder*"
-
-# Example: dir /s/b /A:D "D:*Stea*" would help you find folders with the word "steam" in their names
+if platform == "linux" or platform =="linux2":
+  linuxSearch(fName, dName)
+elif platform == "win32":
+  windowsSearch(fName, dName)
